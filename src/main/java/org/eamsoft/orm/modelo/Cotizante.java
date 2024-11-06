@@ -11,8 +11,8 @@ public class Cotizante {
     private boolean enListaNegraUltimos6Meses;
     private String ciudad;
     private String pais;
-    private String genero;
     private List<String> detalles;
+    private String genero;
 
     public Cotizante(String nombre, String documento, int edad, int semanasCotizadas) {
         this.nombre = nombre;

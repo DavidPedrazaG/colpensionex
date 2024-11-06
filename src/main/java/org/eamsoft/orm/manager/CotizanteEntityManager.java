@@ -16,7 +16,7 @@ public class CotizanteEntityManager {
         this.cotizanteDao = new CotizanteCsvOrm();
         this.cache = SuperCache.getInstance();
         // Obtener la ruta del archivo CSV
-        this.archivoCsv = getClass().getClassLoader().getResource("cotizantes.csv").getPath();
+        this.archivoCsv = getClass().getClassLoader().getResource("cotizantess.csv").getPath();
     }
 
     /**
@@ -42,7 +42,7 @@ public class CotizanteEntityManager {
             for (Cotizante cotizante : cotizantes) {
                 cacheData.put(cotizante.getDocumento(), cotizanteDao.extraerAtributos(cotizante));
             }
-            cache.agregarCache("cotizantes.csv", cacheData);
+            cache.agregarCache("cotizantess.csv", cacheData);
         }
 
         return cotizantes;
@@ -63,6 +63,6 @@ public class CotizanteEntityManager {
      */
     public void save(Cotizante cotizante) {
         cotizanteDao.escribirFila(archivoCsv, cotizante);
-        cache.invalidate("cotizantes.csv"); // Invalidar caché para recargar en la próxima lectura
+        cache.invalidate("cotizantess.csv"); // Invalidar caché para recargar en la próxima lectura
     }
 }
