@@ -1,5 +1,7 @@
 package org.eamsoft.orm.modelo;
 
+import java.util.List;
+
 public class Cotizante {
     private String nombre;
     private String documento;
@@ -7,6 +9,10 @@ public class Cotizante {
     private int semanasCotizadas;
     private String fondo;
     private boolean enListaNegraUltimos6Meses;
+    private String ciudad;
+    private String pais;
+    private String genero;
+    private List<String> detalles;
 
     public Cotizante(String nombre, String documento, int edad, int semanasCotizadas) {
         this.nombre = nombre;
@@ -67,14 +73,48 @@ public class Cotizante {
         this.fondo = fondo;
     }
 
+    public boolean isEnListaNegraUltimos6Meses() {
+        return this.enListaNegraUltimos6Meses;
+    }
+
+    public boolean getEnListaNegraUltimos6Meses() {
+        return this.enListaNegraUltimos6Meses;
+    }
+
+
+    public String getCiudad() {
+        return this.ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public String getPais() {
+        return this.pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
     @Override
     public String toString() {
+        String detallesStr = "";
+        for (int i = 0; i < detalles.size(); i++) {
+            detallesStr+=detalles.get(i);
+        }
         return "Cotizante{" +
                 "nombre='" + nombre + '\'' +
                 ", documento='" + documento + '\'' +
                 ", edad=" + edad +
                 ", semanasCotizadas=" + semanasCotizadas + '\'' +
                 ", fondo=" +fondo +
+                ", ciudad=" +ciudad +
+                ", pais=" +pais +
+                ", genero=" +genero +
+                ", detalles= "+detallesStr+
+                ", enListaNegraUltimos6Meses=" +enListaNegraUltimos6Meses +
                 '}';
     }
 }

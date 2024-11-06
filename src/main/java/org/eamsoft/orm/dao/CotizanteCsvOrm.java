@@ -2,7 +2,9 @@ package org.eamsoft.orm.dao;
 
 import org.eamsoft.orm.modelo.Cotizante;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
@@ -35,6 +37,8 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
         String fondo = fila.get("Fondo");
         cotizante.setFondo(fondo != null ? fondo : "Desconocido"); // Asigna "Desconocido" si no está presente
 
+        cotizante.setCiudad(fila.get("Ciudad"));
+        cotizante.setPais(fila.get("Pais"));
         return cotizante;
     }
 
@@ -46,7 +50,9 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
         atributos.put("Documento", cotizante.getDocumento());
         atributos.put("Edad", String.valueOf(cotizante.getEdad()));
         atributos.put("SemanasCotizadas", String.valueOf(cotizante.getSemanasCotizadas()));
-        atributos.put("Fondo", cotizante.getFondo()); // Agregar el fondo de procedencia
+        atributos.put("Fondo", cotizante.getFondo());
+        atributos.put("Ciudad", cotizante.getCiudad());
+        atributos.put("Pais", cotizante.getPais());
         return atributos;
     }
 }

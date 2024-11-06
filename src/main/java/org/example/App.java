@@ -49,10 +49,10 @@ public class App
     }
 
     private static void mostrarCotizantesEnTabla(List<Cotizante> cotizantes) {
-        String formatoTabla = "| %-15s | %-10s | %-5s | %-15s | %-15s |%n";
-        System.out.format("+-----------------+------------+-------+-----------------+-------------------+%n");
-        System.out.format("| Nombre          | Documento  | Edad  | SemanasCotizadas | Fondo             |%n");
-        System.out.format("+-----------------+------------+-------+-----------------+-------------------+%n");
+        String formatoTabla = "| %-15s | %-10s | %-5s | %-15s | %-15s | %-15s | %-15s |%n";
+        System.out.format("+-----------------+------------+-------+------------------+--------+---------+---------+%n");
+        System.out.format("| Nombre          | Documento  | Edad  | SemanasCotizadas | Fondo  | Ciudad  | Pais    |%n");
+        System.out.format("+-----------------+------------+-------+------------------+--------+---------+---------+%n");
 
         for (Cotizante cotizante : cotizantes) {
             System.out.format(formatoTabla,
@@ -60,7 +60,9 @@ public class App
                     cotizante.getDocumento(),
                     cotizante.getEdad(),
                     cotizante.getSemanasCotizadas(),
-                    cotizante.getFondo()
+                    cotizante.getFondo(),
+                    cotizante.getCiudad(),
+                    cotizante.getPais()
             );
         }
 
