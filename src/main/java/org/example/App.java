@@ -5,7 +5,9 @@ import org.eamsoft.orm.manager.CotizanteEntityManager;
 import org.eamsoft.orm.modelo.Cotizante;
 import org.eamsoft.orm.service.ValidadorTransferencia;
 import org.eamsoft.orm.service.validation.results.ResultadoValidacion;
+import org.eamsoft.orm.service.validation.rules.ReglaInstitucionPublica;
 import org.eamsoft.orm.service.validation.rules.ReglaListaNegra;
+import org.eamsoft.orm.service.validation.rules.ReglaPrePensionado;
 import org.eamsoft.orm.service.validation.rules.ReglaValidacion;
 
 import java.util.Arrays;
@@ -49,10 +51,10 @@ public class App
     }
 
     private static void mostrarCotizantesEnTabla(List<Cotizante> cotizantes) {
-        String formatoTabla = "| %-15s | %-10s | %-5s | %-15s | %-15s | %-15s | %-15s |%n";
-        System.out.format("+-----------------+------------+-------+------------------+--------+---------+---------+%n");
-        System.out.format("| Nombre          | Documento  | Edad  | SemanasCotizadas | Fondo  | Ciudad  | Pais    |%n");
-        System.out.format("+-----------------+------------+-------+------------------+--------+---------+---------+%n");
+        String formatoTabla = "| %-12s | %-10s | %-3s | %-3s | %-20s | %-10s | %-15s | %-10s | %-5s | %-5s |%n";
+        System.out.format("+-----------------+------------+-------+------------------+--------+---------+-------+---------+-------------+-----------------+%n");
+        System.out.format("| Nombre          | Documento  | Edad  | SemanasCotizadas | Fondo  | Ciudad  | Pais  | Genero  | ListaNegra  | Pre-pensionado  |%n");
+        System.out.format("+-----------------+------------+-------+------------------+--------+---------+-------+---------+-------------+-----------------+%n");
 
         for (Cotizante cotizante : cotizantes) {
             System.out.format(formatoTabla,
@@ -62,11 +64,15 @@ public class App
                     cotizante.getSemanasCotizadas(),
                     cotizante.getFondo(),
                     cotizante.getCiudad(),
-                    cotizante.getPais()
+                    cotizante.getPais(),
+                    cotizante.getGenero(),
+                    cotizante.getEnListaNegraUltimos6Meses(),
+                    cotizante.esPrePensionado()
             );
         }
 
-        System.out.format("+-----------------+------------+-------+-----------------+%n");
+        System.out.format("+-----------------+------------+-------+------------------+--------+---------+-------+---------+-------------+-----------------+%n");
+
     }
 
     private static void ejecutarProcesoDeValidacion(CotizanteEntityManager cotizanteManager) {
@@ -75,7 +81,9 @@ public class App
 
         List<Cotizante> cotizantes = cotizanteManager.findAll();
         ValidadorTransferencia validador = new ValidadorTransferencia(Arrays.asList(
-                new ReglaListaNegra()
+                new ReglaListaNegra(),
+                new ReglaPrePensionado(),
+                new ReglaInstitucionPublica()
         ));
 
         System.out.println("\n--- Resultados del Proceso de Validación ---");

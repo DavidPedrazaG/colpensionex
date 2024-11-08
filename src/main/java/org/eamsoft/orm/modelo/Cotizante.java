@@ -1,7 +1,5 @@
 package org.eamsoft.orm.modelo;
 
-import java.util.List;
-
 public class Cotizante {
     private String nombre;
     private String documento;
@@ -9,16 +7,24 @@ public class Cotizante {
     private int semanasCotizadas;
     private String fondo;
     private boolean enListaNegraUltimos6Meses;
+    private boolean esPrePensionado;
     private String ciudad;
     private String pais;
-    private List<String> detalles;
+    private String detalles;
     private String genero;
 
-    public Cotizante(String nombre, String documento, int edad, int semanasCotizadas) {
+    public Cotizante(String nombre, String documento, int edad, int semanasCotizadas, String fondo, boolean enListaNegraUltimos6Meses, boolean esPrePensionado, String ciudad, String pais, String detalles, String genero) {
         this.nombre = nombre;
         this.documento = documento;
         this.edad = edad;
         this.semanasCotizadas = semanasCotizadas;
+        this.fondo = fondo;
+        this.enListaNegraUltimos6Meses = enListaNegraUltimos6Meses;
+        this.esPrePensionado = esPrePensionado;
+        this.ciudad = ciudad;
+        this.pais = pais;
+        this.detalles = detalles;
+        this.genero = genero;
     }
 
     public Cotizante() {
@@ -98,12 +104,32 @@ public class Cotizante {
         this.pais = pais;
     }
 
+    public String getDetalles() {
+        return this.detalles;
+    }
+
+    public void setDetalles(String detalles) {
+        this.detalles = detalles;
+    }
+
+    public String getGenero() {
+        return this.genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+
+    public boolean esPrePensionado() {
+        return this.esPrePensionado;
+    }
+
+    public void setEsPrePensionado(boolean esPrePensionado) {
+        this.esPrePensionado = esPrePensionado;
+    }
+
     @Override
     public String toString() {
-        String detallesStr = "";
-        for (int i = 0; i < detalles.size(); i++) {
-            detallesStr+=detalles.get(i);
-        }
         return "Cotizante{" +
                 "nombre='" + nombre + '\'' +
                 ", documento='" + documento + '\'' +
@@ -113,8 +139,9 @@ public class Cotizante {
                 ", ciudad=" +ciudad +
                 ", pais=" +pais +
                 ", genero=" +genero +
-                ", detalles= "+detallesStr+
+                ", detalles= "+detalles+
                 ", enListaNegraUltimos6Meses=" +enListaNegraUltimos6Meses +
+                ", esPrePensionado=" +esPrePensionado +
                 '}';
     }
 }

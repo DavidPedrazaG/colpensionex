@@ -2,9 +2,7 @@ package org.eamsoft.orm.dao;
 
 import org.eamsoft.orm.modelo.Cotizante;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
@@ -39,6 +37,10 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
 
         cotizante.setCiudad(fila.get("Ciudad"));
         cotizante.setPais(fila.get("Pais"));
+        cotizante.setGenero(fila.get("Genero"));
+        cotizante.setDetalles(fila.get("Detalles"));
+        cotizante.setEnListaNegraUltimos6Meses(Boolean.parseBoolean(fila.get("En_Lista_Negra_6_Meses")));
+        cotizante.setEsPrePensionado(Boolean.parseBoolean(fila.get("Pre_pensionado")));
         return cotizante;
     }
 
@@ -53,6 +55,10 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
         atributos.put("Fondo", cotizante.getFondo());
         atributos.put("Ciudad", cotizante.getCiudad());
         atributos.put("Pais", cotizante.getPais());
+        atributos.put("Genero", cotizante.getGenero());
+        atributos.put("Detalles", cotizante.getDetalles());
+        atributos.put("En_Lista_Negra_6_Meses", String.valueOf(cotizante.getEnListaNegraUltimos6Meses()));
+        atributos.put("Pre_pensionado", String.valueOf(cotizante.esPrePensionado()));
         return atributos;
     }
 }
