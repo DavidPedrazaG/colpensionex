@@ -8,10 +8,10 @@ public class ReglaInstitucionPublica implements ReglaValidacion{
     @Override
     public ResultadoValidacion aplicar(Cotizante cotizante) {
         ReglaCivil procesarComoCivil = new ReglaCivil();
-
         switch (cotizante.getFondo()) {
+            
             case "Armada":
-                if(cotizante.getDetalles().equals("Tiene condecoración")){
+                if(cotizante.getDetalles().equals("Tiene condecoraciÃ³n")){
                     return new ResultadoValidacion(true, "Aprovado");
                 }else{
                     return procesarComoCivil.aplicar(cotizante);
@@ -19,31 +19,31 @@ public class ReglaInstitucionPublica implements ReglaValidacion{
             case "Inpec":
                 if(cotizante.getDetalles().contains("Tiene hijos en el Inpec")){
                     return new ResultadoValidacion(true, "Aprovado");
-                }else if(cotizante.getDetalles().equals("No tiene hijos en el Inpec|Tiene condecoración")){
+                }else if(cotizante.getDetalles().equals("No tiene hijos en el Inpec|Tiene condecoraciÃ³n")){
                     return new ResultadoValidacion(true, "Aprovado");
                 }else{
                     return procesarComoCivil.aplicar(cotizante);
                 }                
             
-            case "Policía":
-                if(cotizante.getDetalles().equals("Tiene familiares en la Policía|Es el de mayor edad")){
+            case "PolicÃa":
+                if(cotizante.getDetalles().equals("Tiene familiares en la PolicÃa|Es el de mayor edad")){
                     return new ResultadoValidacion(true, "Aprovado");
                 }else{
                     return procesarComoCivil.aplicar(cotizante);
                 }                
             
             case "Minsalud":
-                if(cotizante.getDetalles().equals("No tiene observación disciplinaria")){
+                if(cotizante.getDetalles().equals("No tiene observaciÃ³n disciplinaria")){
                     return new ResultadoValidacion(true, "Aprovado");
                 }else{
-                    return new ResultadoValidacion(false, "Rechazado: Tiene observación disciplinaria, sera pasado a la lista negra hasta el dd/MM/yyyy");
+                    return new ResultadoValidacion(false, "Rechazado: Tiene observaciÃ³n disciplinaria, sera pasado a la lista negra hasta el dd/MM/yyyy");
                 }
             
             case "Mininterior":
-                if(cotizante.getDetalles().equals("No tiene observación disciplinaria")){
+                if(cotizante.getDetalles().equals("No tiene observaciÃ³n disciplinaria")){
                     return new ResultadoValidacion(true, "Aprovado");
                 }else{
-                    return new ResultadoValidacion(false, "Rechazado: Tiene observación disciplinaria, sera pasado a la lista negra hasta el dd/MM/yyyy");
+                    return new ResultadoValidacion(false, "Rechazado: Tiene observaciÃ³n disciplinaria, sera pasado a la lista negra hasta el dd/MM/yyyy");
                 }
             default:
                 return procesarComoCivil.aplicar(cotizante);

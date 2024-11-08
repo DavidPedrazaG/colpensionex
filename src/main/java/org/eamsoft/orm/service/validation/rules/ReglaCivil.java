@@ -8,17 +8,14 @@ public class ReglaCivil implements ReglaValidacion{
     @Override
     public ResultadoValidacion aplicar(Cotizante cotizante) {
         switch (cotizante.getCiudad()) {
-            case "Bogotá":
+            case "BogotÃ¡":
                 return new ResultadoValidacion(false, "Rechazado: Nació y reside en Bogotá");
-            case "Medellín":
+            case "MedellÃn":
                 return new ResultadoValidacion(false, "Rechazado: Nació y reside en Medellín");
             case "Cali":
                 return new ResultadoValidacion(false, "Rechazado: Nació y reside en Cali");
             default:
-                if(cotizante.getDocumento().equals("7608702935")){
-                    System.err.println("Aqui va jorge");
-                }
-                if(cotizante.getPais().endsWith("tán")){
+                if(cotizante.getPais().endsWith("tÃ¡n")){
                     return new ResultadoValidacion(false, "Rechazado: Es de un país que termina en tán");
                 }
         }
@@ -34,7 +31,7 @@ public class ReglaCivil implements ReglaValidacion{
                 }else{
                     return new ResultadoValidacion(false, "Rechazado: Supera el maximo de semanas para el fondo al que pertenece");
                 }
-            case "Protección":
+            case "ProtecciÃ³n":
                 if(cotizante.getSemanasCotizadas() <= 590){
                     return new ResultadoValidacion(true, "Aprovado");
                 }else{
