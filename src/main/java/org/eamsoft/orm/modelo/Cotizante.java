@@ -6,6 +6,7 @@ public class Cotizante {
     private int edad;
     private int semanasCotizadas;
     private String fondo;
+    private String fondoCivilOpcional;
     private boolean enListaNegraUltimos6Meses;
     private boolean esPrePensionado;
     private String ciudad;
@@ -13,12 +14,13 @@ public class Cotizante {
     private String detalles;
     private String genero;
 
-    public Cotizante(String nombre, String documento, int edad, int semanasCotizadas, String fondo, boolean enListaNegraUltimos6Meses, boolean esPrePensionado, String ciudad, String pais, String detalles, String genero) {
+    public Cotizante(String nombre, String documento, int edad, int semanasCotizadas, String fondo, String fondoCivilOpcional, boolean enListaNegraUltimos6Meses, boolean esPrePensionado, String ciudad, String pais, String detalles, String genero) {
         this.nombre = nombre;
         this.documento = documento;
         this.edad = edad;
         this.semanasCotizadas = semanasCotizadas;
         this.fondo = fondo;
+        this.fondoCivilOpcional = fondoCivilOpcional;
         this.enListaNegraUltimos6Meses = enListaNegraUltimos6Meses;
         this.esPrePensionado = esPrePensionado;
         this.ciudad = ciudad;
@@ -79,6 +81,14 @@ public class Cotizante {
         this.fondo = fondo;
     }
 
+    public String getFondoCivilOpcional() {
+        return this.fondoCivilOpcional;
+    }
+
+    public void setFondoCivilOpcional(String fondoPrivado) {
+        this.fondoCivilOpcional = fondoPrivado;
+    }
+
     public boolean isEnListaNegraUltimos6Meses() {
         return this.enListaNegraUltimos6Meses;
     }
@@ -135,7 +145,8 @@ public class Cotizante {
                 ", documento='" + documento + '\'' +
                 ", edad=" + edad +
                 ", semanasCotizadas=" + semanasCotizadas + '\'' +
-                ", fondo=" +fondo +
+                ", fondoPublico=" +fondo +
+                ", fondoCivil=" +fondoCivilOpcional +
                 ", ciudad=" +ciudad +
                 ", pais=" +pais +
                 ", genero=" +genero +

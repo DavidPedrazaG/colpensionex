@@ -24,6 +24,9 @@ public class ReglaCivil implements ReglaValidacion{
         }else if(cotizante.getEdad() > 57 && cotizante.getGenero().equals("Femenino")){
             return new ResultadoValidacion(false, "Rechazado: Alcanzó la edad para aplicar al RPM");
         }
+        if(cotizante.getDocumento().equals("1847979116")){
+            System.out.println("Hi");
+        }
         switch (cotizante.getFondo()) {
             case "Porvenir":
                 if(cotizante.getSemanasCotizadas() <= 800){
@@ -31,7 +34,7 @@ public class ReglaCivil implements ReglaValidacion{
                 }else{
                     return new ResultadoValidacion(false, "Rechazado: Supera el maximo de semanas para el fondo al que pertenece");
                 }
-            case "ProtecciÃ³n":
+            case "Proteccion":
                 if(cotizante.getSemanasCotizadas() <= 590){
                     return new ResultadoValidacion(true, "Aprovado");
                 }else{
@@ -53,7 +56,38 @@ public class ReglaCivil implements ReglaValidacion{
                 return new ResultadoValidacion(true, "Aprovado");
         
             default:
-                return new ResultadoValidacion(false, "Rechazado: No pertenece a ninguna institución");
+                switch (cotizante.getFondoCivilOpcional()) {
+                    case "Porvenir":
+                        if(cotizante.getSemanasCotizadas() <= 800){
+                            return new ResultadoValidacion(true, "Aprovado");
+                        }else{
+                            return new ResultadoValidacion(false, "Rechazado: Supera el maximo de semanas para el fondo al que pertenece");
+                        }
+                    case "Proteccion":
+                        if(cotizante.getSemanasCotizadas() <= 590){
+                            return new ResultadoValidacion(true, "Aprovado");
+                        }else{
+                            return new ResultadoValidacion(false, "Rechazado: Supera el maximo de semanas para el fondo al que pertenece");
+                        }
+                    case "Colfondos":
+                        if(cotizante.getSemanasCotizadas() <= 300){
+                            return new ResultadoValidacion(true, "Aprovado");
+                        }else{
+                            return new ResultadoValidacion(false, "Rechazado: Supera el maximo de semanas para el fondo al que pertenece");
+                        }
+                    case "Old Mutual":
+                        if(cotizante.getSemanasCotizadas() <= 100){
+                            return new ResultadoValidacion(true, "Aprovado");
+                        }else{
+                            return new ResultadoValidacion(false, "Rechazado: Supera el maximo de semanas para el fondo al que pertenece");
+                        }
+                    case "Fondo extranjero":
+                        return new ResultadoValidacion(true, "Aprovado");
+                
+                    default:
+                        return new ResultadoValidacion(false, "Rechazado: No pertenece a ninguna institución");
+        
+                }
 
         }
     }

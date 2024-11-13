@@ -12,11 +12,11 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
         Cotizante cotizante = new Cotizante();
 
         // Asignar el nombre y el documento directamente
-        cotizante.setNombre(fila.get("Nombre"));
-        cotizante.setDocumento(fila.get("Documento"));
+        cotizante.setNombre(fila.get("nombre"));
+        cotizante.setDocumento(fila.get("documento"));
 
         // Manejar el valor de Edad, verificando si es null o vacío
-        String edadStr = fila.get("Edad");
+        String edadStr = fila.get("edad");
         if (edadStr != null && !edadStr.isEmpty()) {
             cotizante.setEdad(Integer.parseInt(edadStr));
         } else {
@@ -24,7 +24,7 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
         }
 
         // Manejar el valor de SemanasCotizadas, verificando si es null o vacío
-        String semanasStr = fila.get("Semanas_Cotizadas");
+        String semanasStr = fila.get("semanas_cotizadas");
         if (semanasStr != null && !semanasStr.isEmpty()) {
             cotizante.setSemanasCotizadas(Integer.parseInt(semanasStr));
         } else {
@@ -32,15 +32,18 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
         }
 
         // Asignar el fondo de procedencia, verificando si es null o vacío
-        String fondo = fila.get("Fondo");
-        cotizante.setFondo(fondo != null ? fondo : "Desconocido"); // Asigna "Desconocido" si no está presente
+        String fondoPublico = fila.get("fondo");
+        cotizante.setFondo(fondoPublico != null ? fondoPublico : "NA"); // Asigna "NA" si no está presente
 
-        cotizante.setCiudad(fila.get("Ciudad"));
-        cotizante.setPais(fila.get("Pais"));
-        cotizante.setGenero(fila.get("Genero"));
-        cotizante.setDetalles(fila.get("Detalles"));
-        cotizante.setEnListaNegraUltimos6Meses(Boolean.parseBoolean(fila.get("En_Lista_Negra_6_Meses")));
-        cotizante.setEsPrePensionado(Boolean.parseBoolean(fila.get("Pre_pensionado")));
+        String fondoCivil = fila.get("fondo_civil_opcional");
+        cotizante.setFondoCivilOpcional(fondoCivil != null ? fondoCivil : "NA"); // Asigna "NA" si no está presente
+
+        cotizante.setCiudad(fila.get("ciudad"));
+        cotizante.setPais(fila.get("pais"));
+        cotizante.setGenero(fila.get("genero"));
+        cotizante.setDetalles(fila.get("detalles"));
+        cotizante.setEnListaNegraUltimos6Meses(Boolean.parseBoolean(fila.get("lista_negra_6_meses")));
+        cotizante.setEsPrePensionado(Boolean.parseBoolean(fila.get("pre_pensionado")));
         return cotizante;
     }
 
@@ -48,17 +51,18 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
     @Override
     public Map<String, String> extraerAtributos(Cotizante cotizante) {
         Map<String, String> atributos = new HashMap<>();
-        atributos.put("Nombre", cotizante.getNombre());
-        atributos.put("Documento", cotizante.getDocumento());
-        atributos.put("Edad", String.valueOf(cotizante.getEdad()));
-        atributos.put("SemanasCotizadas", String.valueOf(cotizante.getSemanasCotizadas()));
-        atributos.put("Fondo", cotizante.getFondo());
-        atributos.put("Ciudad", cotizante.getCiudad());
-        atributos.put("Pais", cotizante.getPais());
-        atributos.put("Genero", cotizante.getGenero());
-        atributos.put("Detalles", cotizante.getDetalles());
-        atributos.put("En_Lista_Negra_6_Meses", String.valueOf(cotizante.getEnListaNegraUltimos6Meses()));
-        atributos.put("Pre_pensionado", String.valueOf(cotizante.esPrePensionado()));
+        atributos.put("nombre", cotizante.getNombre());
+        atributos.put("documento", cotizante.getDocumento());
+        atributos.put("edad", String.valueOf(cotizante.getEdad()));
+        atributos.put("semanas_cotizadas", String.valueOf(cotizante.getSemanasCotizadas()));
+        atributos.put("fondo", cotizante.getFondo());
+        atributos.put("fondo_civil_opcional", cotizante.getFondoCivilOpcional());
+        atributos.put("ciudad", cotizante.getCiudad());
+        atributos.put("pais", cotizante.getPais());
+        atributos.put("genero", cotizante.getGenero());
+        atributos.put("detalles", cotizante.getDetalles());
+        atributos.put("lista_negra_6_meses", String.valueOf(cotizante.getEnListaNegraUltimos6Meses()));
+        atributos.put("pre_pensionado", String.valueOf(cotizante.esPrePensionado()));
         return atributos;
     }
 }
