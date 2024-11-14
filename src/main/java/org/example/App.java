@@ -34,7 +34,7 @@ public class App
 
             switch (opcion) {
                 case 1:
-                    List<Cotizante> cotizantes = cotizanteManager.findAll("cotizantes.csv", cotizanteManager.getArchivoCotizantesCsv());
+                    List<Cotizante> cotizantes = cotizanteManager.findAll();
                     mostrarCotizantesEnTabla(cotizantes);
                     break;
                 case 2:
