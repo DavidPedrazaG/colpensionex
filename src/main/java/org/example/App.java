@@ -4,6 +4,7 @@ package org.example;
 import org.eamsoft.orm.manager.CotizanteEntityManager;
 import org.eamsoft.orm.modelo.Cotizante;
 import org.eamsoft.orm.service.ValidadorTransferencia;
+import org.eamsoft.orm.service.transferencia.ProcesoTransferencia;
 import org.eamsoft.orm.service.validation.results.ResultadoValidacion;
 import org.eamsoft.orm.service.validation.rules.ReglaInstitucionPublica;
 import org.eamsoft.orm.service.validation.rules.ReglaListaNegra;
@@ -33,7 +34,7 @@ public class App
 
             switch (opcion) {
                 case 1:
-                    List<Cotizante> cotizantes = cotizanteManager.findAll();
+                    List<Cotizante> cotizantes = cotizanteManager.findAll("cotizantes.csv", cotizanteManager.getArchivoCotizantesCsv());
                     mostrarCotizantesEnTabla(cotizantes);
                     break;
                 case 2:
@@ -75,31 +76,16 @@ public class App
 
     }
 
-    private static void ejecutarProcesoDeValidacion(CotizanteEntityManager cotizanteManager) {
-        int totalAprobados = 0;
-        int totalRechazados = 0;
-
-        List<Cotizante> cotizantes = cotizanteManager.findAll();
+    private static void ejecutarProcesoDeValidacion(CotizanteEntityManager cotizanteManager) {        
+        List<Cotizante> cotizantes = cotizanteManager.findAll("cotizantes.csv", cotizanteManager.getArchivoCotizantesCsv());
         ValidadorTransferencia validador = new ValidadorTransferencia(Arrays.asList(
                 new ReglaListaNegra(),
                 new ReglaPrePensionado(),
                 new ReglaInstitucionPublica()
         ));
+        ProcesoTransferencia proceso = new ProcesoTransferencia(validador);
 
         System.out.println("\n--- Resultados del Proceso de Validación ---");
-        for (Cotizante cotizante : cotizantes) {
-            ResultadoValidacion resultado = validador.validar(cotizante);
-            if (resultado.esAprobado()) {
-                System.out.println("Cotizante " + cotizante.getNombre() + " (Documento: " + cotizante.getDocumento() + ") fue aprobado.");
-                totalAprobados++;
-            } else {
-                System.out.println("Cotizante " + cotizante.getNombre() + " (Documento: " + cotizante.getDocumento() + ") fue rechazado: " + resultado.getMotivo());
-                totalRechazados++;
-            }
-        }
-
-        System.out.println("\n--- Resumen de Resultados ---");
-        System.out.println("Total de Cotizantes Aprobados: " + totalAprobados);
-        System.out.println("Total de Cotizantes Rechazados: " + totalRechazados);
+        proceso.procesarCotizantes(cotizantes);        
     }
 }
