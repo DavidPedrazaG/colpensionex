@@ -2,7 +2,10 @@ package org.eamsoft.orm.dao;
 
 import org.eamsoft.orm.modelo.Cotizante;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
@@ -42,7 +45,16 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
         cotizante.setPais(fila.get("pais"));
         cotizante.setGenero(fila.get("genero"));
         cotizante.setDetalles(fila.get("detalles"));
-        cotizante.setEnListaNegraUltimos6Meses(Boolean.parseBoolean(fila.get("lista_negra_6_meses")));
+
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+            String csvDate = fila.get("lista_negra_6_meses");
+            Date date = sdf.parse(csvDate);
+            cotizante.setEnListaNegraUltimos6Meses(date);
+        }catch (Exception exception){
+            cotizante.setEnListaNegraUltimos6Meses(null);
+        }
+        
         cotizante.setEsPrePensionado(Boolean.parseBoolean(fila.get("pre_pensionado")));
         return cotizante;
     }

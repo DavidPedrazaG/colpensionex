@@ -1,5 +1,7 @@
 package org.eamsoft.orm.modelo;
 
+import java.util.Date;
+
 public class Cotizante {
     private String nombre;
     private String documento;
@@ -7,14 +9,14 @@ public class Cotizante {
     private int semanasCotizadas;
     private String fondo;
     private String fondoCivilOpcional;
-    private boolean enListaNegraUltimos6Meses;
+    private Date enListaNegraUltimos6Meses;
     private boolean esPrePensionado;
     private String ciudad;
     private String pais;
     private String detalles;
     private String genero;
 
-    public Cotizante(String nombre, String documento, int edad, int semanasCotizadas, String fondo, String fondoCivilOpcional, boolean enListaNegraUltimos6Meses, boolean esPrePensionado, String ciudad, String pais, String detalles, String genero) {
+    public Cotizante(String nombre, String documento, int edad, int semanasCotizadas, String fondo, String fondoCivilOpcional, Date enListaNegraUltimos6Meses, boolean esPrePensionado, String ciudad, String pais, String detalles, String genero) {
         this.nombre = nombre;
         this.documento = documento;
         this.edad = edad;
@@ -65,11 +67,11 @@ public class Cotizante {
         this.semanasCotizadas = semanasCotizadas;
     }
 
-    public boolean haEstadoEnListaNegraUltimos6Meses() {
+    public Date getEnListaNegraUltimos6Meses() {
         return enListaNegraUltimos6Meses;
     }
 
-    public void setEnListaNegraUltimos6Meses(boolean enListaNegraUltimos6Meses) {
+    public void setEnListaNegraUltimos6Meses(Date enListaNegraUltimos6Meses) {
         this.enListaNegraUltimos6Meses = enListaNegraUltimos6Meses;
     }
 
@@ -88,15 +90,6 @@ public class Cotizante {
     public void setFondoCivilOpcional(String fondoPrivado) {
         this.fondoCivilOpcional = fondoPrivado;
     }
-
-    public boolean isEnListaNegraUltimos6Meses() {
-        return this.enListaNegraUltimos6Meses;
-    }
-
-    public boolean getEnListaNegraUltimos6Meses() {
-        return this.enListaNegraUltimos6Meses;
-    }
-
 
     public String getCiudad() {
         return this.ciudad;
@@ -154,5 +147,9 @@ public class Cotizante {
                 ", enListaNegraUltimos6Meses=" +enListaNegraUltimos6Meses +
                 ", esPrePensionado=" +esPrePensionado +
                 '}';
+    }
+
+    public String toCSV() {
+        return ","+nombre+","+documento+","+edad+","+semanasCotizadas+","+enListaNegraUltimos6Meses+","+esPrePensionado+","+"..."+","+"..."+","+fondo+","+fondoCivilOpcional+","+genero+","+ciudad+","+pais+","+detalles;
     }
 }

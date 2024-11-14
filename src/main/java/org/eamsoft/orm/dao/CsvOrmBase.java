@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eamsoft.orm.modelo.Cotizante;
+
 public abstract class CsvOrmBase<T> {
 
     protected abstract T mapearFila(Map<String, String> fila);
@@ -44,12 +46,17 @@ public abstract class CsvOrmBase<T> {
         Map<String, String> atributos = extraerAtributos(elemento);
 
         try (FileWriter writer = new FileWriter(archivoCsv, true)) {
-            StringBuilder fila = new StringBuilder();
-            for (String valor : atributos.values()) {
-                fila.append(valor).append(",");
+            try{
+                Cotizante cotizante = (Cotizante) elemento;
+                writer.write(cotizante.toCSV()+"\n");
+            }catch(Exception exception){
+                StringBuilder fila = new StringBuilder();
+                for (String valor : atributos.values()) {
+                    fila.append(valor).append(",");
+                }
+                fila.setLength(fila.length() - 1);
+                writer.write(fila.toString() + "\n");
             }
-            fila.setLength(fila.length() - 1);
-            writer.write(fila.toString() + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }

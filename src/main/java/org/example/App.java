@@ -34,7 +34,7 @@ public class App
 
             switch (opcion) {
                 case 1:
-                    List<Cotizante> cotizantes = cotizanteManager.findAll();
+                    List<Cotizante> cotizantes = cotizanteManager.findAll("cotizantes.csv", cotizanteManager.getArchivoCotizantesCsv());
                     mostrarCotizantesEnTabla(cotizantes);
                     break;
                 case 2:
@@ -77,7 +77,7 @@ public class App
     }
 
     private static void ejecutarProcesoDeValidacion(CotizanteEntityManager cotizanteManager) {        
-        List<Cotizante> cotizantes = cotizanteManager.findAll();
+        List<Cotizante> cotizantes = cotizanteManager.findAll("cotizantes.csv", cotizanteManager.getArchivoCotizantesCsv());
         ValidadorTransferencia validador = new ValidadorTransferencia(Arrays.asList(
                 new ReglaListaNegra(),
                 new ReglaPrePensionado(),
