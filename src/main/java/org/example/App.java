@@ -77,7 +77,7 @@ public class App
     }
 
     private static void ejecutarProcesoDeValidacion(CotizanteEntityManager cotizanteManager) {        
-        List<Cotizante> cotizantes = cotizanteManager.findAll("cotizantes.csv", cotizanteManager.getArchivoCotizantesCsv());
+        List<Cotizante> cotizantes = cotizanteManager.findAll();
         ValidadorTransferencia validador = new ValidadorTransferencia(Arrays.asList(
                 new ReglaListaNegra(),
                 new ReglaPrePensionado(),
