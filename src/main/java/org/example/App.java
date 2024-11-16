@@ -91,17 +91,17 @@ public class App {
                 aprobados.add(cotizante);
                 System.out.println("Aprobado: " + cotizante.getNombre());
             } else {
-                rechazados.add(cotizante);
                 System.out.println("Rechazado: " + cotizante.getNombre() + " - Motivo: " + resultado.getMotivo());
                 cotizante.setDetalles(resultado.getMotivo());
+                rechazados.add(cotizante);
             }
         }
-
-        // Llamar a guardarListaNegraSimplificada una sola vez
+        // Utilizar transferirAListaNegra para guardar todos los rechazados
         if (!rechazados.isEmpty()) {
-            cotizanteManager.guardarListaNegraSimplificada(rechazados);
+            for (Cotizante rechazado : rechazados) {
+                transferirListaNegra.transferirAListaNegra(rechazado, rechazado.getDetalles());
+            }
         }
-
         System.out.println("\n--- Proceso completado ---");
         System.out.println("Aprobados: " + aprobados.size());
         System.out.println("Rechazados: " + rechazados.size());
