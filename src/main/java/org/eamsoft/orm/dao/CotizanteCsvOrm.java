@@ -14,6 +14,8 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
     public Cotizante mapearFila(Map<String, String> fila) {
         Cotizante cotizante = new Cotizante();
 
+        String idStr = fila.get("id");
+        cotizante.setId(parseIntegerOrDefault(idStr, 0));
         // Asignar directamente campos que no necesitan validación adicional
         cotizante.setNombre(fila.get("nombre"));
         cotizante.setDocumento(fila.get("documento"));

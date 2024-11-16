@@ -17,6 +17,7 @@ public class Cotizante {
     private String genero;
     private String motivo;
     private String fondoPublico;
+    private int id;
 
     public Cotizante(String nombre, String documento, int edad, int semanasCotizadas, String fondo, String fondoCivilOpcional, Date enListaNegraUltimos6Meses, boolean esPrePensionado, String ciudad, String pais, String detalles, String genero) {
         this.nombre = nombre;
@@ -149,6 +150,14 @@ public class Cotizante {
         this.fondoPublico = fondoPublico;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "Cotizante{" +
@@ -169,11 +178,9 @@ public class Cotizante {
     }
 
     public String toCSV() {
-        return "," + nombre + "," + documento + "," + edad + "," + semanasCotizadas + "," +
+        return id + "," + nombre + "," + documento + "," + edad + "," + semanasCotizadas + "," +
                 enListaNegraUltimos6Meses + "," +
                 esPrePensionado + "," + fondoPublico + "," + "..." + "," + fondo + "," +
                 fondoCivilOpcional + "," + genero + "," + ciudad + "," + pais + "," + detalles + "," + motivo;
     }
-
-
 }
