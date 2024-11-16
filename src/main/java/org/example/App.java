@@ -5,27 +5,25 @@ import org.eamsoft.orm.manager.CotizanteEntityManager;
 import org.eamsoft.orm.modelo.Cotizante;
 import org.eamsoft.orm.service.ValidadorTransferencia;
 import org.eamsoft.orm.service.transferencia.ProcesoTransferencia;
+import org.eamsoft.orm.service.transferencia.TransferirListaNegra;
 import org.eamsoft.orm.service.validation.results.ResultadoValidacion;
 import org.eamsoft.orm.service.validation.rules.ReglaInstitucionPublica;
 import org.eamsoft.orm.service.validation.rules.ReglaListaNegra;
 import org.eamsoft.orm.service.validation.rules.ReglaPrePensionado;
 import org.eamsoft.orm.service.validation.rules.ReglaValidacion;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
-public class App
-{
+public class App {
     public static void main(String[] args) {
         CotizanteEntityManager cotizanteManager = new CotizanteEntityManager();
+        TransferirListaNegra transferirListaNegra = new TransferirListaNegra();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("\n--- Menú Principal ---");
             System.out.println("1. Mostrar todos los cotizantes");
-            System.out.println("2. Ejecutar proceso de validación para cada cotizante");
+            System.out.println("2. Ejecutar proceso de validación para cada cotizante (y generar archivo lista negra)");
             System.out.println("3. Salir");
             System.out.print("Seleccione una opción: ");
 
@@ -38,7 +36,7 @@ public class App
                     mostrarCotizantesEnTabla(cotizantes);
                     break;
                 case 2:
-                    ejecutarProcesoDeValidacion(cotizanteManager);
+                    ejecutarProcesoDeValidacion(cotizanteManager, transferirListaNegra);
                     break;
                 case 3:
                     System.out.println("Saliendo del programa...");
@@ -73,19 +71,42 @@ public class App
         }
 
         System.out.format("+-----------------+------------+-------+------------------+--------+---------+-------+---------+-------------+-----------------+%n");
-
     }
 
-    private static void ejecutarProcesoDeValidacion(CotizanteEntityManager cotizanteManager) {        
+    private static void ejecutarProcesoDeValidacion(CotizanteEntityManager cotizanteManager, TransferirListaNegra transferirListaNegra) {
         List<Cotizante> cotizantes = cotizanteManager.findAll();
         ValidadorTransferencia validador = new ValidadorTransferencia(Arrays.asList(
                 new ReglaListaNegra(),
                 new ReglaPrePensionado(),
                 new ReglaInstitucionPublica()
         ));
-        ProcesoTransferencia proceso = new ProcesoTransferencia(validador);
+
+        List<Cotizante> rechazados = new ArrayList<>();
+        List<Cotizante> aprobados = new ArrayList<>();
 
         System.out.println("\n--- Resultados del Proceso de Validación ---");
-        proceso.procesarCotizantes(cotizantes);        
+        for (Cotizante cotizante : cotizantes) {
+            ResultadoValidacion resultado = validador.validar(cotizante);
+            if (resultado.esAprobado()) {
+                aprobados.add(cotizante);
+                System.out.println("Aprobado: " + cotizante.getNombre());
+            } else {
+                rechazados.add(cotizante);
+                System.out.println("Rechazado: " + cotizante.getNombre() + " - Motivo: " + resultado.getMotivo());
+                cotizante.setDetalles(resultado.getMotivo());
+            }
+        }
+
+        // Llamar a guardarListaNegraSimplificada una sola vez
+        if (!rechazados.isEmpty()) {
+            cotizanteManager.guardarListaNegraSimplificada(rechazados);
+        }
+
+        System.out.println("\n--- Proceso completado ---");
+        System.out.println("Aprobados: " + aprobados.size());
+        System.out.println("Rechazados: " + rechazados.size());
     }
+
 }
+
+
