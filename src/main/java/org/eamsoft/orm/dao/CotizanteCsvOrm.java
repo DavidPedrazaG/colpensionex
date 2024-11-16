@@ -2,7 +2,10 @@ package org.eamsoft.orm.dao;
 
 import org.eamsoft.orm.modelo.Cotizante;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
@@ -11,41 +14,57 @@ public class CotizanteCsvOrm extends CsvOrmBase<Cotizante>{
     public Cotizante mapearFila(Map<String, String> fila) {
         Cotizante cotizante = new Cotizante();
 
-        // Asignar el nombre y el documento directamente
+        // Asignar directamente campos que no necesitan validación adicional
         cotizante.setNombre(fila.get("nombre"));
         cotizante.setDocumento(fila.get("documento"));
 
-        // Manejar el valor de Edad, verificando si es null o vacío
+        // Validar y convertir el campo "edad"
         String edadStr = fila.get("edad");
-        if (edadStr != null && !edadStr.isEmpty()) {
-            cotizante.setEdad(Integer.parseInt(edadStr));
-        } else {
-            cotizante.setEdad(0); // Asignar un valor predeterminado, por ejemplo 0
-        }
+        cotizante.setEdad(parseIntegerOrDefault(edadStr, 0)); // Si es inválido, asignar 0
 
-        // Manejar el valor de SemanasCotizadas, verificando si es null o vacío
+        // Validar y convertir el campo "semanas_cotizadas"
         String semanasStr = fila.get("semanas_cotizadas");
-        if (semanasStr != null && !semanasStr.isEmpty()) {
-            cotizante.setSemanasCotizadas(Integer.parseInt(semanasStr));
-        } else {
-            cotizante.setSemanasCotizadas(0); // Asignar un valor predeterminado, por ejemplo 0
-        }
+        cotizante.setSemanasCotizadas(parseIntegerOrDefault(semanasStr, 0)); // Si es inválido, asignar 0
 
-        // Asignar el fondo de procedencia, verificando si es null o vacío
-        String fondoPublico = fila.get("fondo");
-        cotizante.setFondo(fondoPublico != null ? fondoPublico : "NA"); // Asigna "NA" si no está presente
-
-        String fondoCivil = fila.get("fondo_civil_opcional");
-        cotizante.setFondoCivilOpcional(fondoCivil != null ? fondoCivil : "NA"); // Asigna "NA" si no está presente
-
+        // Validar otros campos
+        cotizante.setFondo(fila.getOrDefault("fondo", "NA"));
+        cotizante.setFondoPublico(fila.getOrDefault("fondo_publico", "NA"));
+        cotizante.setFondoCivilOpcional(fila.getOrDefault("fondo_civil_opcional", "NA"));
         cotizante.setCiudad(fila.get("ciudad"));
         cotizante.setPais(fila.get("pais"));
         cotizante.setGenero(fila.get("genero"));
         cotizante.setDetalles(fila.get("detalles"));
-        cotizante.setEnListaNegraUltimos6Meses(Boolean.parseBoolean(fila.get("lista_negra_6_meses")));
-        cotizante.setEsPrePensionado(Boolean.parseBoolean(fila.get("pre_pensionado")));
+
+        // Manejar la fecha de lista negra
+        try {
+            String csvDate = fila.get("lista_negra_6_meses");
+            if (csvDate != null && !csvDate.isEmpty() && !csvDate.equalsIgnoreCase("null")) {
+                SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+                cotizante.setEnListaNegraUltimos6Meses(sdf.parse(csvDate));
+            } else {
+                cotizante.setEnListaNegraUltimos6Meses(null);
+            }
+        } catch (Exception e) {
+            cotizante.setEnListaNegraUltimos6Meses(null); // En caso de error, asignar null
+        }
+
+        // Validar el campo booleano
+        cotizante.setEsPrePensionado(Boolean.parseBoolean(fila.getOrDefault("pre_pensionado", "false")));
+
         return cotizante;
     }
+
+    private int parseIntegerOrDefault(String value, int defaultValue) {
+        if (value == null || value.isEmpty() || value.equalsIgnoreCase("null")) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defaultValue; // Si ocurre un error, retornar el valor predeterminado
+        }
+    }
+
 
 
     @Override

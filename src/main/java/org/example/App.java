@@ -5,25 +5,22 @@ import org.eamsoft.orm.manager.CotizanteEntityManager;
 import org.eamsoft.orm.modelo.Cotizante;
 import org.eamsoft.orm.service.ValidadorTransferencia;
 import org.eamsoft.orm.service.transferencia.ProcesoTransferencia;
-import org.eamsoft.orm.service.transferencia.TransferirListaNegra;
-import org.eamsoft.orm.service.validation.results.ResultadoValidacion;
 import org.eamsoft.orm.service.validation.rules.ReglaInstitucionPublica;
 import org.eamsoft.orm.service.validation.rules.ReglaListaNegra;
 import org.eamsoft.orm.service.validation.rules.ReglaPrePensionado;
-import org.eamsoft.orm.service.validation.rules.ReglaValidacion;
 
 import java.util.*;
 
-public class App {
+public class App
+{
     public static void main(String[] args) {
         CotizanteEntityManager cotizanteManager = new CotizanteEntityManager();
-        TransferirListaNegra transferirListaNegra = new TransferirListaNegra();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("\n--- Menú Principal ---");
             System.out.println("1. Mostrar todos los cotizantes");
-            System.out.println("2. Ejecutar proceso de validación para cada cotizante (y generar archivo lista negra)");
+            System.out.println("2. Ejecutar proceso de validación para cada cotizante");
             System.out.println("3. Salir");
             System.out.print("Seleccione una opción: ");
 
@@ -32,11 +29,11 @@ public class App {
 
             switch (opcion) {
                 case 1:
-                    List<Cotizante> cotizantes = cotizanteManager.findAll();
+                    List<Cotizante> cotizantes = cotizanteManager.findAll("cotizantes.csv", cotizanteManager.getArchivoCotizantesCsv());
                     mostrarCotizantesEnTabla(cotizantes);
                     break;
                 case 2:
-                    ejecutarProcesoDeValidacion(cotizanteManager, transferirListaNegra);
+                    ejecutarProcesoDeValidacion(cotizanteManager);
                     break;
                 case 3:
                     System.out.println("Saliendo del programa...");
@@ -71,42 +68,20 @@ public class App {
         }
 
         System.out.format("+-----------------+------------+-------+------------------+--------+---------+-------+---------+-------------+-----------------+%n");
+
     }
 
-    private static void ejecutarProcesoDeValidacion(CotizanteEntityManager cotizanteManager, TransferirListaNegra transferirListaNegra) {
-        List<Cotizante> cotizantes = cotizanteManager.findAll();
+    private static void ejecutarProcesoDeValidacion(CotizanteEntityManager cotizanteManager) {
+        List<Cotizante> cotizantes = cotizanteManager.findAll("cotizantes.csv", cotizanteManager.getArchivoCotizantesCsv());
         ValidadorTransferencia validador = new ValidadorTransferencia(Arrays.asList(
                 new ReglaListaNegra(),
                 new ReglaPrePensionado(),
                 new ReglaInstitucionPublica()
         ));
-
-        List<Cotizante> rechazados = new ArrayList<>();
-        List<Cotizante> aprobados = new ArrayList<>();
-
+        ProcesoTransferencia proceso = new ProcesoTransferencia(validador);
         System.out.println("\n--- Resultados del Proceso de Validación ---");
-        for (Cotizante cotizante : cotizantes) {
-            ResultadoValidacion resultado = validador.validar(cotizante);
-            if (resultado.esAprobado()) {
-                aprobados.add(cotizante);
-                System.out.println("Aprobado: " + cotizante.getNombre());
-            } else {
-                System.out.println("Rechazado: " + cotizante.getNombre() + " - Motivo: " + resultado.getMotivo());
-                cotizante.setDetalles(resultado.getMotivo());
-                rechazados.add(cotizante);
-            }
-        }
-        // Utilizar transferirAListaNegra para guardar todos los rechazados
-        if (!rechazados.isEmpty()) {
-            for (Cotizante rechazado : rechazados) {
-                transferirListaNegra.transferirAListaNegra(rechazado, rechazado.getDetalles());
-            }
-        }
-        System.out.println("\n--- Proceso completado ---");
-        System.out.println("Aprobados: " + aprobados.size());
-        System.out.println("Rechazados: " + rechazados.size());
+        proceso.procesarCotizantes(cotizantes);
     }
-
 }
 
 

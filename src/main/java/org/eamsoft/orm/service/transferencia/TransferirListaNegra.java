@@ -1,6 +1,8 @@
 package org.eamsoft.orm.service.transferencia;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.eamsoft.orm.manager.CotizanteEntityManager;
@@ -9,31 +11,39 @@ import org.eamsoft.orm.service.validation.results.ResultadoValidacion;
 
 public class TransferirListaNegra {
 
-    private CotizanteEntityManager cotizanteManager = new CotizanteEntityManager();
+    private final CotizanteEntityManager cotizanteManager = new CotizanteEntityManager();
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    public ResultadoValidacion transferirAListaNegra(Cotizante cotizante, String motivoRechazo) {
-        try {
-            // Verificar si el cotizante ya está en la lista negra
-            if (cotizanteManager.existsInListaNegra(cotizante.getDocumento())) {
-                return new ResultadoValidacion(false, "El cotizante ya está en la lista negra.");
+    public TransferirListaNegra() {
+    }
+
+    public ResultadoValidacion transferirAListaNegra(Cotizante cotizante) {
+        System.out.println("Transfiriendo cotizante a lista negra: " + cotizante.getDocumento());
+        cotizante.setEnListaNegraUltimos6Meses(new Date());
+        cotizanteManager.save(cotizante, cotizanteManager.getArchivoListaNegraCsv(), "lista_negra.csv");
+        return new ResultadoValidacion(false,
+                "Rechazado: Tiene observación disciplinaria, será pasado a la lista negra con fecha de hoy "
+                        + sdf.format(cotizante.getEnListaNegraUltimos6Meses()));
+    }
+
+
+    public Cotizante reiniciarTiempoEnLista(Cotizante cotizante){
+        return cotizante;
+    }
+
+    public ResultadoValidacion buscarEnListaNegra(Cotizante cotizante){
+        List<Cotizante> listaNegra = cotizanteManager.findAll("lista_negra.csv", cotizanteManager.getArchivoListaNegraCsv());
+        for (Cotizante aux : listaNegra) {
+            if(aux.getDocumento()!=null){
+                if(aux.getDocumento().equals(cotizante.getDocumento())){
+                    aux.setEnListaNegraUltimos6Meses(new Date());
+                    cotizanteManager.updateListaNegra(listaNegra);
+                    return new ResultadoValidacion(false, "Rechazado: Esta en la lista negra, se encontrará en lista negra con fecha de hoy "+sdf.format(aux.getEnListaNegraUltimos6Meses()));
+
+                }
             }
-
-            // Actualizar los detalles del cotizante con el motivo del rechazo
-            cotizante.setDetalles(motivoRechazo + " (Transferido a lista negra el " + java.time.LocalDate.now() + ")");
-
-            // Crear una lista temporal para guardar este cotizante
-            List<Cotizante> listaNegra = new ArrayList<>();
-            listaNegra.add(cotizante);
-
-            // Guardar en el archivo lista_negra.csv
-            cotizanteManager.guardarListaNegraSimplificada(listaNegra);
-
-            // Retornar resultado exitoso
-            return new ResultadoValidacion(true, "Cotizante transferido a lista negra exitosamente.");
-        } catch (Exception e) {
-            // Manejar cualquier excepción
-            return new ResultadoValidacion(false, "Error al transferir a lista negra: " + e.getMessage());
         }
+        return new ResultadoValidacion(true, "Aprobado");
     }
 }
 
