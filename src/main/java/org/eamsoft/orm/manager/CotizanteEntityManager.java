@@ -26,8 +26,8 @@ public class CotizanteEntityManager {
     }
 
     /**
-     * Obtiene todos los cotizantes, ya sea de la caché o del archivo CSV.
-     * Si los datos no están en la caché, los carga desde el CSV y los almacena en la caché.
+     * Obtiene todos los cotizantes, ya sea de la caché o de múltiples archivos CSV.
+     * Si los datos no están en la caché, los carga desde los archivos CSV y los almacena en la caché.
      */
     public List<Cotizante> findAll(String nombreArchivo, String archivo) {
         Map<String, Map<String, String>> cachedData = (Map<String, Map<String, String>>) cache.obtenerCache(nombreArchivo);
@@ -40,8 +40,14 @@ public class CotizanteEntityManager {
                 cotizantes.add(cotizante);
             }
         } else {
-            // Cargar desde el CSV y almacenar en la caché
-            cotizantes = cotizanteDao.leerTodasLasFilas(archivo);
+            // Leer el archivo principal
+            cotizantes.addAll(cotizanteDao.leerTodasLasFilas(archivo));
+
+            // Leer archivos adicionales como cotizantess_1.csv, cotizantess_2.csv, etc.
+            for (int i = 1; i <= 600; i++) { // Ajusta el rango según la cantidad de archivos
+                String archivoAdicional = getClass().getClassLoader().getResource("cotizantess_" + i + ".csv").getPath();
+                cotizantes.addAll(cotizanteDao.leerTodasLasFilas(archivoAdicional));
+            }
 
             // Convertir la lista de Cotizantes en un formato adecuado para la caché
             Map<String, Map<String, String>> cacheData = new HashMap<>();
@@ -53,7 +59,6 @@ public class CotizanteEntityManager {
 
         return cotizantes;
     }
-
 
     /**
      * Busca un cotizante por su ID (Documento).
@@ -73,7 +78,6 @@ public class CotizanteEntityManager {
         cotizanteDao.escribirFila(archivo, cotizante);
         cache.invalidate(nombreArchivo); // Invalidar caché para recargar en la próxima lectura
     }
-
 
     private void verificarFechasListaNegra() {
         List<Cotizante> listaNegra = findAll("lista_negra.csv", getArchivoListaNegraCsv());
@@ -96,7 +100,6 @@ public class CotizanteEntityManager {
         updateListaNegra(listaNegra); // Actualizar el archivo CSV
     }
 
-
     public void updateListaNegra(List<Cotizante> listaNegra) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(archivoListaNegraCsv))) {
             pw.println("id,nombre,documento,edad,semanas_cotizadas,lista_negra_6_meses,pre_pensionado,fondo_publico,fondo_civil,fondo,fondo_civil_opcional,genero,ciudad,pais,detalles,motivo");
@@ -109,11 +112,9 @@ public class CotizanteEntityManager {
         cache.invalidate("lista_negra.csv");
     }
 
-
     public String getArchivoCotizantesCsv() {
         return this.archivoCotizantesCsv;
     }
-
 
     public String getArchivoListaNegraCsv() {
         return this.archivoListaNegraCsv;
